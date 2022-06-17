@@ -1,5 +1,7 @@
 const crypto = require('../utils/crypo')
 const uuid = require('uuid')
+const sequelize = require('../models/index').sequelize
+const initModels = require('../models/init-models')
 
 const userDB = []
 
@@ -20,17 +22,17 @@ const userDB = []
 
 */
 
-const registerUser = (data) => {
+const models = initModels(sequelize)
+
+const registerUser = async (data) => {
     const hashedPassword = crypto.hashPassword(data.password)
     const userId = uuid.v4()
-    const newUser = {
+    const newUser = models.users.create({
         id : userId,
         ...data,
         password: hashedPassword,
-        active: false,
-        role: "normal"
-    }
-    userDB.push(newUser)
+    })
+ 
     return {
         message:  `User created succesfully with the id ${userId}`,
         user: newUser
@@ -38,16 +40,38 @@ const registerUser = (data) => {
 }
 
 
-const getUserByEmail = (email) => {
-    const user = userDB.filter((item) => item.email === email)
-    return user[0]
+const getUserById = async (id) => {
+    const user = await models.users.findByPk(id)
+    return user
+}
+
+const getAllUsers = async() => {
+    const users = await models.users.findAll({
+        attributes : {
+            exclude:["password"] 
+        }
+    })
+    return users
+
+}
+
+
+const getUserByEmail = async (email) => {
+    const user = await models.users.findall({
+        where: {
+            email
+        }
+    }) 
+    return user
 }
 
 
 module.exports = {
     registerUser,
     getUserByEmail,
-    userDB
+    userDB,
+    getAllUsers,
+    getUserById
 }
 
 // console.log(registerUser({

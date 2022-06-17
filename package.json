@@ -4,11 +4,12 @@
     "description": "My template from Express using PostgreSQL, sequelize, JsonWebToken and testing whith Mocha and chai ",
     "main": "./src/app.js",
     "scripts": {
-       "start": "node ./src/app.js",
-       "dev": "nodemon ./src/app.js",
+        "start": "node ./src/app.js",
+        "dev": "nodemon ./src/app.js",
         "test": "mocha ./src/*/test/*.test.js",
         "eslint": "eslint --ignore-path .gitignore .",
         "prettier": "prettier --write . --ignore-path .gitignore ."
+        
     },
     "keywords": [
         "skeleton",
@@ -39,7 +40,9 @@
         "pg": "^8.7.3",
         "pg-hstore": "^2.3.4",
         "sequelize": "^6.20.1",
-        "swagger-ui-express": "^4.4.0"
+        "sequelize-auto": "^0.8.8",
+        "swagger-ui-express": "^4.4.0",
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
         "chai": "^4.3.6",

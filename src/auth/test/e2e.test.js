@@ -1,9 +1,7 @@
-const { should } = require('chai')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 
 const {describe, it} = require('mocha')
-const { token } = require('morgan')
 const app = require('../../app').app
 
 chai.use(chaiHttp)     
@@ -14,15 +12,16 @@ describe('Suite de test E2E de AUTH', () => {
         .post('/api/v1/auth/login')
         .set("content-type", "application/json")
         .send({
-            email: "alexander.1234@gmail.com",
-            password: "root"
+            email: 'sahid.kick@academlo.com',
+            password: 'root'
         })
         end((err, res) => {
+            const token = res.body.token
             chai.assert.equal(res.status, 200)
             chai.assert.typeOf(res.body.token, 'string')
             chai.request(app)
                 .get('/api/v1/post')
-                .set('Authorization', `JWT ${res.body.token}`)
+                .set('Authorization', `JWT ${token}`)
                 .end((err, res) => {
                     chai.assert.equal(res.status, 200)
                     done()
@@ -35,27 +34,28 @@ describe('Suite de test E2E de AUTH', () => {
         .post('/api/v1/auth/login')
         .get("content-type", "application/json")
         .send( {
-            email: "alexander.1472@gmail.com",
-            password : "root"
+            email: 'sahid.kick@academlo.com',
+            password: 'root'
         })
         .end((err, res) => {
+            const token = res.body.token
             chai.assert.equal(res.status, 200)
             chai.assert.typeOf(res.body.token, 'string')
             chai.request(app)
             .get('/api/v1/post')
-            .set('Authorization', `JWT ${res.body.token}`)
+            .set('Authorization', `JWT ${token}`)
             .end((err, res) => {
                 chai.assert.equal(res.status, 200)
                 chai.request(app)
                 .post('/api/v1/post')
                 .send({
-                    title: "Test",
-                    content: "probando el post",
-                    user_id: "1"
+                    title: 'Test',
+                    content: 'asjfbsjdfbsjdfjd',
+                    user_id: '1',
                 })
-                .set('content/type', 'application/json')
+                .set('content-type', 'application/json')
                 .set('Authorization', `JWT ${token}`)
-                .end((end, res) => {
+                .end((err, res) => {
                     chai.assert.equal(res.status, 201)
                     done()
                 })
@@ -63,13 +63,13 @@ describe('Suite de test E2E de AUTH', () => {
                                 
         })
     })
-    it('should return 204 delete new posst', (done) => {
+    it('Should return 200 and token for succesful login', (done) => {
         chai.request(app)
-            .post('/api/v1/post')
+            .post('/api/v1/auth/login')
             .set('content-type', 'application/json')
             .send({
-                email: "alexander.1472@gmail.com",
-                password: "root"
+                email: 'sahid.kick@academlo.com',
+                password: 'root'
             })
             .end((err, res) => {
                 const token = res.body.token
@@ -83,9 +83,9 @@ describe('Suite de test E2E de AUTH', () => {
                         chai.request(app)
                             .post('api/v1/post')
                             .send({
-                                title : "test",
-                                content: "probando otro post",
-                                user_id: "1"
+                                title: 'Test',
+                                content: 'asjfbsjdfbsjdfjd',
+                                user_id: '1'
                             })
                             .set('content-type', 'application/json')
                             .set('Authorization', `JWT ${token}`)
